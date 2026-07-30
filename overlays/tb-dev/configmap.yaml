@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: stalwart-migration-proxy-config
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 data:
   config.toml: |
     [server]

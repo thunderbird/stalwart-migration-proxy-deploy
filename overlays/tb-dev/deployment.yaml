@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stalwart-migration-proxy
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 spec:
   template:
     spec:
@@ -22,7 +22,7 @@ spec:
             # Location of the proxy's config file
             - name: PROXY_CONFIG
               value: "/etc/proxy/config.toml"
-            
+
             # Override the log level here, or in the config map with the log_level option. Valid
             # values are listed here: https://docs.rs/log/latest/log/enum.Level.html
             # - name: RUST_LOG
@@ -34,7 +34,7 @@ spec:
                 secretKeyRef:
                   name: stalwart-migration-proxy-bearer-token
                   key: STALWART_MIGRATION_PROXY_BEARER_TOKEN
-              
+
           ports:
             - name: https
               containerPort: 443
@@ -90,4 +90,3 @@ spec:
                       path: stage-thundermail.crt
                     - key: tls.key
                       path: stage-thundermail.key
-

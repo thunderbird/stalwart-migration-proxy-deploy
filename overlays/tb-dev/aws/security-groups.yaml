@@ -4,7 +4,7 @@ apiVersion: ec2.services.k8s.aws/v1alpha1
 kind: SecurityGroup
 metadata:
   name: stalwart-migration-proxy-elasticache-redis
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 spec:
   vpcID: vpc-0e0f4b8d603d463e0
   ingressRules:
@@ -21,7 +21,7 @@ apiVersion: ec2.services.k8s.aws/v1alpha1
 kind: SecurityGroup
 metadata:
   name: stalwart-migration-proxy-lb
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 spec:
   vpcID: vpc-0e0f4b8d603d463e0
 
@@ -31,7 +31,7 @@ apiVersion: ec2.services.k8s.aws/v1alpha1
 kind: SecurityGroup
 metadata:
   name: stalwart-migration-proxy
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 spec:
   vpcID: vpc-0e0f4b8d603d463e0
   ingressRules:
@@ -87,7 +87,7 @@ apiVersion: vpcresources.k8s.aws/v1beta1
 kind: SecurityGroupPolicy
 metadata:
   name: stalwart-migration-proxy
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 spec:
   podSelector:
     matchLabels:

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: stalwart-migration-proxy-config
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 data:
   config.toml: |
     # For the moment, we will not configure an "old" server. Let's test with just the one service.
@@ -15,7 +15,7 @@ data:
 
     # Override the log level here, or with the RUST_LOG env-var. Valid values are listed here:
     # https://docs.rs/log/latest/log/enum.Level.html
-    log_level = "info"  
+    log_level = "info"
 
     [tls.certificate.primary]
     cert = "/etc/proxy/tls.crt"
@@ -26,7 +26,7 @@ data:
     [tls.protocols]
     min_version = "1.2"
     ignore_client_order = false
-    
+
     # Destination naming should be inclusive of at least a cluster name and K8s namespace. This
     # allows us to build segregated Stalwart installs across namespaces and still proxy them.
     # Hostname DNS records are resolved at connection time and not cached in Stalwart, so we
@@ -40,22 +40,22 @@ data:
     # port = 443
     # tls = "implicit"
     # forwarding = true
-    
+
     # [destination.legacy-prod.protocol.smtp]
     # port = 465
     # tls = "implicit"
     # forwarding = "proxy"
-    
+
     # [destination.legacy-prod.protocol.submission]
     # port = 587
     # tls = "starttls"
     # forwarding = "proxy"
-    
+
     # [destination.legacy-prod.protocol.imap]
     # port = 993
     # tls = "implicit"
     # forwarding = "proxy"
-    
+
     # [destination.legacy-prod.protocol.managesieve]
     # port = 4190
     # tls = "starttls"
@@ -72,23 +72,23 @@ data:
     tls = "implicit"
     forwarding = "none" # HTTP doesn't support PROXY protocol
     forwarded = true    # Instead, manipulate the X-Forwarded-For header for proxy chain info
-    
+
     [destination.tb-prod-thundermail.protocol.smtp]
     port = 465
     tls = "implicit"
-    
+
     [destination.tb-prod-thundermail.protocol.submission]
     port = 587
     tls = "starttls"
-    
+
     [destination.tb-prod-thundermail.protocol.imap]
     port = 993
     tls = "implicit"
-    
+
     [destination.tb-prod-thundermail.protocol.managesieve]
     port = 4190
     tls = "starttls"
-    
+
     [listener.https]
     protocol = "http"
     forwarded = "off"
@@ -141,7 +141,7 @@ data:
     # [[http.route]]
     # match = "/authorize/**"
     # destination = "old"
-    
+
     # Endpoints served only by the new deployment.
     [[http.route]]
     match = "/api/auth"
@@ -161,17 +161,16 @@ data:
     [[http.route]]
     match = "/device"
     destination = "tb-prod-thundermail"
-    
+
     # OAuth token exchange is shared; route it by the web client that requested it.
     # Add matching mapping entries:
     [[http.route]]
     match = "/auth/token"
     extract = { from = "body", regex = "client_id=([^&]+)" }
     fallback = "default"
-    
+
     # Everything else: route by the authenticated account, fall back to default.
     [[http.route]]
     match = "/**"
     extract = { from = "authorization" }
     fallback = "default"
-

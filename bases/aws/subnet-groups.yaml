@@ -4,7 +4,7 @@ apiVersion: elasticache.services.k8s.aws/v1alpha1
 kind: CacheSubnetGroup
 metadata:
   name: stalwart-migration-proxy-redis-subnet-group
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
@@ -16,4 +16,3 @@ spec:
       value: thundermail
     - key: managed-by
       value: ack
-

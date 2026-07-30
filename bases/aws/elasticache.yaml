@@ -5,7 +5,7 @@ apiVersion: elasticache.services.k8s.aws/v1alpha1
 kind: ReplicationGroup
 metadata:
   name: stalwart-migration-proxy-redis
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
@@ -20,7 +20,7 @@ spec:
   securityGroupRefs:
     - from:
         name: stalwart-migration-proxy-elasticache-redis
-        namespace: thundermail
+        namespace: stalwart-migration-proxy
   transitEncryptionEnabled: false
   atRestEncryptionEnabled: true
   automaticFailoverEnabled: true
