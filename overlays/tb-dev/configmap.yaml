@@ -50,7 +50,7 @@ data:
 
     # This destination will be where the SMTP passthrough service is routed, so we must have
     # a listener for this service on this destination (but not on other destinations).
-    [destination.tb-dev-thundermail.protocol.smtp]
+    [destination.legacy-stage.protocol.smtp]
     port = 25
     tls = "plain"
 
