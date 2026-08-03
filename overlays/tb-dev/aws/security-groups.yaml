@@ -61,6 +61,8 @@ spec:
           groupID: sg-08c51d43c4a250a81 # eks-cluster-sg-mzla-eks-tb-dev01
         - description: Allow API traffic from the proxy load balancer for health checks
           groupID: "sg-081ce92bce632e583"  # stalwart-migration-proxy-lb
+        - description: Allow API traffic from other migration proxy pods
+          groupID: "sg-0948f31a90e34eba6"  # stalwart-migration-proxy
         - description: Allow API traffic from the Accounts pods
           groupID: "sg-0dba8adea7684454f"  # mzla-tb-dev-accounts-pod
 
