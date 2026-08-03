@@ -21,4 +21,4 @@ metadata:
   name: stalwart-migration-proxy-redis
   namespace: stalwart-migration-proxy
 spec:
-  externalName: "stalwart-migration-proxy-redis.psueny.ng.0001.euc1.cache.amazonaws.com"
+  externalName: "tb-dev-stalwart-migration-proxy-redis.psueny.ng.0001.euc1.cache.amazonaws.com"
