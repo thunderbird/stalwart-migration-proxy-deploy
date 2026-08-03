@@ -25,8 +25,8 @@ spec:
 
             # Override the log level here, or in the config map with the log_level option. Valid
             # values are listed here: https://docs.rs/log/latest/log/enum.Level.html
-            # - name: RUST_LOG
-            #   value: "info"
+            - name: RUST_LOG
+              value: "debug"
 
             # Bearer token
             - name: PROXY_ADMIN_TOKEN
