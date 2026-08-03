@@ -129,7 +129,7 @@ data:
 
     [listener.smtp]
     protocol = "smtp"
-    bind = ["0.0.0.0:25", "[::]:25"]
+    bind = ["0.0.0.0:25"]
     tls = "plain"
 
 
