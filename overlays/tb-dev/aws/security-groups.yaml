@@ -79,7 +79,7 @@ spec:
       ipProtocol: tcp
       userIDGroupPairs:
         - description: Allow traffic from Stalwart Proxy server containers
-          groupID: "sg-0590484da0d3c6702" # stalwart-migration-proxy SG
+          groupID: "" # stalwart-migration-proxy SG
 
 ---
 # Security group policy attaching the migration proxy security group to its pods
@@ -91,6 +91,6 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: stalwart-migration-proxy
+      app: stalwart-migration-proxy-xxx
   securityGroups:
     groupIds: ["sg-0590484da0d3c6702"] # stalwart-migration-proxy
