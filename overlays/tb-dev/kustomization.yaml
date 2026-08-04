@@ -9,7 +9,7 @@ namespace: stalwart-migration-proxy
 
 images:
   - name: stalwartlabs/proxy
-    newTag: v1.0-alpine
+    newTag: v1.0.2-alpine
 
 patches:
   - path: aws/elasticache.yaml
