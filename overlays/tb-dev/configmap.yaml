@@ -77,7 +77,7 @@ data:
 
     [destination.tb-dev-thundermail]
     host = "nginx.thundermail.svc.cluster.local"
-    tls_server_name = "mail.dev-thundermail.com"
+    tls_server_name = "mail.stage-thundermail.com"
     proxy_protocol = true
     forwarded = true
 
