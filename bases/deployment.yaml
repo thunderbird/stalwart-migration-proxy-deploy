@@ -50,6 +50,8 @@ spec:
                   key: STALWART_MIGRATION_PROXY_BEARER_TOKEN
 
           ports:
+            - name: imap
+              containerPort: 143
             - name: https
               containerPort: 443
             - name: smtps

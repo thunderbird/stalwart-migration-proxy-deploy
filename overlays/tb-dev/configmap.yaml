@@ -44,32 +44,25 @@ data:
     [destination.legacy-stage]
     host = "stalwart-legacy.stalwart-migration-proxy.svc.cluster.local"
     tls_server_name = "mail.stage-thundermail.com"
+    forwarding = "proxy"
     proxy_protocol = true
-    forwarding = "none"
     forwarded = true
-
-    # This destination will be where the SMTP passthrough service is routed, so we must have
-    # a listener for this service on this destination (but not on other destinations).
-    [destination.legacy-stage.protocol.smtp]
-    port = 25
-    tls = "plain"
-
-    [destination.legacy-stage.protocol.http]
-    port = 443
-    tls = "implicit"
-    forwarding = "none" # HTTP doesn't support PROXY protocol
-
-    [destination.legacy-stage.protocol.submission]
-    port = 587
-    tls = "starttls"
 
     [destination.legacy-stage.protocol.imap]
     port = 993
     tls = "implicit"
 
+    [destination.legacy-stage.protocol.submission]
+    port = 587
+    tls = "starttls"
+
     [destination.legacy-stage.protocol.managesieve]
     port = 4190
     tls = "starttls"
+
+    [destination.legacy-stage.protocol.http]
+    port = 443
+    tls = "implicit"
 
 
     # -- Destination: tb-dev-thundermail
@@ -78,55 +71,65 @@ data:
     [destination.tb-dev-thundermail]
     host = "nginx.thundermail.svc.cluster.local"
     tls_server_name = "mail.stage-thundermail.com"
+    forwarding = "proxy"
     proxy_protocol = true
-    forwarding = "none"
     forwarded = true
-
-    [destination.tb-dev-thundermail.protocol.http]
-    port = 443
-    tls = "implicit"
-    forwarding = "none" # HTTP doesn't support PROXY protocol
-
-    [destination.tb-dev-thundermail.protocol.submission]
-    port = 587
-    tls = "starttls"
 
     [destination.tb-dev-thundermail.protocol.imap]
     port = 993
     tls = "implicit"
 
+    [destination.tb-dev-thundermail.protocol.submission]
+    port = 587
+    tls = "starttls"
+
     [destination.tb-dev-thundermail.protocol.managesieve]
     port = 4190
     tls = "starttls"
 
+    [destination.tb-dev-thundermail.protocol.http]
+    port = 443
+    tls = "implicit"
+
+    # This destination will be where the SMTP passthrough service is routed, so we must have
+    # a listener for this service on this destination (but not on other destinations).
+    [destination.tb-dev-thundermail.protocol.smtp]
+    port = 25
+    tls = "plain"
+
 
     # --- Listeners ---
-
-    [listener.https]
-    protocol = "http"
-    forwarded = "off"
-    bind = ["0.0.0.0:443"]
-    tls = "implicit"
-
-    [listener.submissions]
-    protocol = "submission"
-    bind = ["0.0.0.0:465"]
-    tls = "implicit"
-
-    [listener.submission]
-    protocol = "submission"
-    bind = ["0.0.0.0:587"]
-    tls = "starttls"
 
     [listener.imaps]
     protocol = "imap"
     bind = ["0.0.0.0:993"]
     tls = "implicit"
 
+    [listener.imap]
+    protocol = "imap"
+    bind = ["0.0.0.0:143"]
+    tls = "starttls"
+
+    [listener.submission]
+    protocol = "submission"
+    bind = ["0.0.0.0:587"]
+    tls = "starttls"
+
+    [listener.submissions]
+    protocol = "submission"
+    bind = ["0.0.0.0:465"]
+    tls = "implicit"
+
     [listener.managesieve]
     protocol = "managesieve"
     bind = ["0.0.0.0:4190"]
     tls = "starttls"
+
+    [listener.https]
+    protocol = "http"
+    bind = ["0.0.0.0:443"]
+    tls = "implicit"
+    forwarded = "off"
 
     [listener.smtp]
     protocol = "smtp"

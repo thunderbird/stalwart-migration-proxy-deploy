@@ -30,6 +30,9 @@ spec:
   loadBalancerSourceRanges:
     - 0.0.0.0/0
   ports:
+    - name: imap
+      port: 143
+      targetPort: imap
     - name: https
       port: 443
       targetPort: https
