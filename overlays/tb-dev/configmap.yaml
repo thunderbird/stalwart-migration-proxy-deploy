@@ -42,7 +42,7 @@ data:
     # The legacy-stage destination runs Stalwart v0.15.x on EC2 instances in the legacy AWS account.
 
     [destination.legacy-stage]
-    host = "mail-legacy.stage-thundermail.com"
+    host = "stalwart-legacy.stalwart-migration-proxy.svc.cluster.local"
     tls_server_name = "mail.stage-thundermail.com"
     proxy_protocol = true
     forwarding = "none"

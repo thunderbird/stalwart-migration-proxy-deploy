@@ -22,3 +22,14 @@ metadata:
   namespace: stalwart-migration-proxy
 spec:
   externalName: "tb-dev-stalwart-migration-proxy-redis.psueny.ng.0001.euc1.cache.amazonaws.com"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart-legacy
+  namespace: stalwart-migration-proxy
+spec:
+  type: ExternalName
+  externalName: "mailstrom-stage-mail-private-i.stage-thundermail.com"
+

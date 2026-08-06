@@ -95,3 +95,17 @@ spec:
     - name: proxy-api
       port: 8080
       targetPort: proxy-api
+
+---
+# For convenience, creates a local service name for the legacy environment
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart-legacy
+  namespace: stalwart-migration-proxy
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  type: ExternalName
+  externalName: "" # Populate with Kustomize
+
