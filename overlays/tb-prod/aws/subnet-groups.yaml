@@ -4,9 +4,8 @@ apiVersion: elasticache.services.k8s.aws/v1alpha1
 kind: CacheSubnetGroup
 metadata:
   name: stalwart-migration-proxy-redis-subnet-group
-  namespace: thundermail
+  namespace: stalwart-migration-proxy
 spec:
   subnetIDs:
     - "subnet-085a71891b27bd24c"  # eu-central-1a
     - "subnet-0b863a1876ec121cb"  # eu-central-1b
-

@@ -1,0 +1,8 @@
+---
+apiVersion: elasticache.services.k8s.aws/v1alpha1
+kind: ReplicationGroup
+metadata:
+  name: stalwart-migration-proxy-redis
+  namespace: stalwart-migration-proxy
+spec:
+  replicationGroupID: tb-dev-stalwart-migration-proxy-redis

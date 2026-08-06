@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../bases
+
+namespace: stalwart-migration-proxy
+
+images:
+  - name: stalwartlabs/proxy
+    newTag: v1.0-alpine
+
+patches:
+  - path: aws/security-groups.yaml
+  - path: aws/subnet-groups.yaml
+  - path: configmap.yaml
+  - path: hpas.yaml
+  - path: secrets.yaml
+  - path: service.yaml
