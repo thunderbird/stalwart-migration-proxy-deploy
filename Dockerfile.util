@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 # Install base utilities
-RUN apk add --no-cache bash curl postgresql17 vim
+RUN apk add --no-cache bash curl postgresql17 redis vim
 
 # Install Stalwart CLI using the official installer script
 RUN curl --proto '=https' --tlsv1.2 -sSfL https://github.com/stalwartlabs/cli/releases/latest/download/stalwart-cli-installer.sh | sh
