@@ -3,6 +3,11 @@
 Operating notes for AI/LLM coding agents (Claude, Cursor, Codes, Copilot, Qwen, Qwythos, etc.).
 
 
+## Repo Purpose
+
+This code repository contains Kustomize bases and overlays for our installations of the Stalwart Migration Proxy (hereafter, "SMP"). This project helps us route traffic between multiple Stalwart Mail Server backends for zero downtime migrations.
+
+
 ## Core Principles
 
 - **Never push directly to `main`** – All modifications should be made on a new or existing non-main branch. Use the branch as a working area and open a PR when the operator asks you to.
@@ -30,3 +35,50 @@ When opening a pull request:
 - **Use 100-character line lengths** when writing code.
 - **Never use em-dash characters** in code files, or other special characters beyond the standard ASCII set.
 - **It is okay to use special characters and emoji** in Markdown documentation, provided it is useful to do so. Remain professional.
+
+
+## Directory structure
+
+This repo is laid out in the following way:
+
+├── .github                           # Directory for GitHub specific configurations
+│   └── workflows                     # Directory for GitHub Actions workflow configurations
+│       └── validate.yaml             # Workflows for PR validation, run when a PR is opened against `main`
+├── AGENTS.md                         # This file, instructions on how LLMs should interact with this repo
+├── bases                             # Directory containing Kustomize bases for all installations
+│   ├── aws                           # Directory containing Kustomize bases for AWS/ACK resources
+│   │   ├── elasticache.yaml          # ElastiCache Redis resources
+│   │   ├── kustomization.yaml        # Kustomize configuration for resources in `bases/aws/`
+│   │   ├── security-groups.yaml      # AWS security groups
+│   │   └── subnet-groups.yaml        # AWS subnet groups used by ElastiCache Redis
+│   ├── configmap.yaml                # SMP configuration file
+│   ├── deployment.yaml               # Kubernetes deployment for SMP
+│   ├── hpas.yaml                     # HorizontalPodAutoscaler for SMP
+│   ├── kustomization.yaml            # Kustomize configuration for resources in `bases/`
+│   ├── secrets.yaml                  # ExternalSecret for SMP's secret bearer token
+│   └── service.yaml                  # Kubernetes Service resources exposing parts of SMP to different audiences
+├── Dockerfile.util                   # Builds a Docker image containing helpful Stalwart management utilities
+├── overlays                          # Kustomize overlays for various installations
+│   ├── tb-dev                        # Kustomize overlays for the tb-dev environment
+│   │   ├── aws                       # Kustomize overlays for AWS resources in the tb-dev environment
+│   │   │   ├── elasticache.yaml      # ElastiCache Redis resource overlays for the tb-dev environment
+│   │   │   ├── security-groups.yaml  # AWS security group resource overlays for the tb-dev environment
+│   │   │   └── subnet-groups.yaml    # AWS subnet group resource overlays for the tb-dev environment
+│   │   ├── configmap.yaml            # SMP configuration file overlay for the tb-dev environment
+│   │   ├── deployment.yaml           # Deployment resource overlay for the tb-dev environment
+│   │   ├── hpas.yaml                 # HorizontalPodAutoscaler overlay for the tb-dev environment
+│   │   ├── kustomization.yaml        # Kustomize configuration for overlays in `overlays/tb-dev`
+│   │   ├── secrets.yaml              # ExternalSecret overlay for the tb-dev environment
+│   │   └── service.yaml              # Service overlay for the tb-dev environment
+│   └── tb-prod                       # Kustomize overlays for the tb-prod environment
+│       ├── aws                       # Kustomize overlays for AWS resources in the tb-prod environment
+│       │   ├── security-groups.yaml  # AWS security group resource overlays for the tb-prod environment
+│       │   └── subnet-groups.yaml    # AWS subnet group resource overlays for the tb-prod environment
+│       ├── configmap.yaml            # SMP configuration file overlay for the tb-prod environment
+│       ├── hpas.yaml                 # HorizontalPodAutoscaler overlay for the tb-prod environment
+│       ├── kustomization.yaml        # Kustomize configuration for overlays in `overlays/tb-prod`
+│       ├── secrets.yaml              # ExternalSecret overlay for the tb-prod environment
+│       └── service.yaml              # Service overlay for the tb-prod environment
+├── README.md                         # Basic information about this repo
+└── util                              # Directory for handy utility scripts not part of normal operation
+    └── kustomize-build-all.sh        # Script to test Kustomize builds for all environments
