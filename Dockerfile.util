@@ -1,8 +1,9 @@
 # Build a custom Alpine image with curl for installing tools
 FROM alpine:latest
 
-# Install base utilities
-RUN apk add --no-cache bash curl postgresql17 redis vim
+# Update the system and install handy utilities
+RUN apk update && \
+    apk add --no-cache bash curl postgresql17 redis vim
 
 # Install Stalwart CLI using the official installer script
 RUN curl --proto '=https' --tlsv1.2 -sSfL \
