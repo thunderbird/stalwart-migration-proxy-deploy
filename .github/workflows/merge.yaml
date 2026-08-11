@@ -19,7 +19,7 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     environment:
-      name: staging
+      name: preview-mzla-tb-dev
       deployment: false
     steps:
       - uses: actions/checkout@v4
