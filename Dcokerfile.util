@@ -1,0 +1,14 @@
+# Build a custom Alpine image with curl for installing tools
+FROM alpine:latest
+
+# Install base utilities
+RUN apk add --no-cache curl bash postgresql17
+
+# Install Stalwart CLI using the official installer script
+RUN curl --proto '=https' --tlsv1.2 -sSfL https://github.com/stalwartlabs/cli/releases/latest/download/stalwart-cli-installer.sh | sh
+
+# Install Vandelay using the official installer script
+RUN curl --proto '=https' --tlsv1.2 -sSfL https://github.com/stalwartlabs/vandelay/releases/latest/download/vandelay-installer.sh | sh -s -- -y && source ~/.cargo/env >> ~/.bashrc
+
+# Set bash as the default entrypoint to enable sourcing
+ENTRYPOINT ["/bin/bash"]
