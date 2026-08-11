@@ -5,10 +5,14 @@ FROM alpine:latest
 RUN apk add --no-cache bash curl postgresql17 redis vim
 
 # Install Stalwart CLI using the official installer script
-RUN curl --proto '=https' --tlsv1.2 -sSfL https://github.com/stalwartlabs/cli/releases/latest/download/stalwart-cli-installer.sh | sh
+RUN curl --proto '=https' --tlsv1.2 -sSfL \
+    https://github.com/stalwartlabs/cli/releases/latest/download/stalwart-cli-installer.sh \
+    | sh
 
 # Install Vandelay using the official installer script
-RUN curl --proto '=https' --tlsv1.2 -sSfL https://github.com/stalwartlabs/vandelay/releases/latest/download/vandelay-installer.sh | sh
+RUN curl --proto '=https' --tlsv1.2 -sSfL \
+    https://github.com/stalwartlabs/vandelay/releases/latest/download/vandelay-installer.sh \
+    | sh
 
 # Automatically source the cargo env when we launch the shell
 RUN echo 'source ~/.cargo/env' >> ~/.bashrc
