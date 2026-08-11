@@ -21,3 +21,12 @@ When opening a pull request:
 - **Use a terse but adequate title** describing the sum total of the changes. "Open SMTP port in the migration proxy" or "Add Docker image with Stalwart utilities" are good examples.
 - **PR descriptions should be very concise** - LLMs have a tendency to spew slop into PR descriptions. Unless something very complicated is going on, a PR description should rarely contain more than several sentences or a couple of paragraphs. Content related to task management does not belong here. Suggest creating a Github issue and linking to it if some other step came before this one or comes after it.
 - **Include agent attribution** at the end of the PR description. For example, "This code was written by a coding agent (Qwythos) as instructed." This makes it clear that automated assistance was used, and helps satisfy any organizational or compliance requirements.
+- **Do not ever merge a PR** on behalf of a user or perform any other actions that would result in a change to the `main` branch. Actions which result in `main` branch changes should always be done by a human operator. In this repo, merging a PR based against `main` will result in deployments to live environments, so caution must be exercised in these cases.
+
+
+## Documentation and other text generation
+
+- **Use Markdown** when writing documentation. Most documentation can go in the `README.md` file for now.
+- **Use 100-character line lengths** when writing code.
+- **Never use em-dash characters** in code files, or other special characters beyond the standard ASCII set.
+- **It is okay to use special characters and emoji** in Markdown documentation, provided it is useful to do so. Remain professional.
