@@ -20,7 +20,7 @@ permissions:
   contents: read    # This is required for actions/checkout
 
 jobs:
-  kustomize-build:
+  detect-changes:
     runs-on: ubuntu-latest
     environment:
       name: staging
@@ -28,5 +28,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build all Kustomize overlays
+      - uses: dorny/paths-filter@v4
+        id: file-check
+        with:
+          filters: |
+            validate-dockerfiles:
+              - 'Dockerfile**'
+            validate-kustomize:
+              - './bases/**'
+              - './overlays/**'
+
+      - name: Test-build Docker images
+        if: steps.file-check.outputs.validate-dockerfiles == 'true'
+        run: |
+          find . -maxdepth 1 -name 'Dockerfile.*' | xargs docker build . -f
+
+      - name: Test-build all Kustomize overlays
+        if: steps.file-check.outputs.validate-kustomize == 'true'
         run: ./util/kustomize-build-all.sh
