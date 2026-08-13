@@ -133,6 +133,12 @@ spec:
         - cidrIP: "0.0.0.0/0"
           description: "Allow all egress"
   ingressRules:
+    - fromPort: 25
+      toPort: 25
+      ipProtocol: tcp
+      ipRanges:
+        - cidrIP: "0.0.0.0/0"
+          description: "Allow all SMTP ingress"
     - fromPort: 443
       toPort: 443
       ipProtocol: tcp

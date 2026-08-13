@@ -38,8 +38,6 @@ spec:
           ports:
             - name: smtp
               containerPort: 25
-            - name: imap
-              containerPort: 143
             - name: https
               containerPort: 443
             - name: smtps
