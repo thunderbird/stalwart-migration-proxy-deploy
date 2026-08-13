@@ -67,6 +67,12 @@ spec:
     # service is never exposed to public users, and so there is no proxy mechanism for it. The rest
     # of these are service ports which are exposed through the nginx proxy. We set the migration
     # proxy up to support those.
+    - fromPort: 25
+      toPort: 25
+      ipProtocol: tcp
+      userIDGroupPairs:
+        - description: Allow SMTP service traffic from the proxy load balancer
+          groupID: "" # Populate with Kustomize
     - fromPort: 443
       toPort: 443
       ipProtocol: tcp

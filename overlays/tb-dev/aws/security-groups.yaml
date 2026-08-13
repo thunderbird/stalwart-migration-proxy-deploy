@@ -20,6 +20,12 @@ spec:
   ingressRules:
     # Port 8080 runs the migration proxy API, which should never be exposed to the public. We
     # instead separate that access off to other services.
+    - fromPort: 25
+      toPort: 25
+      ipProtocol: tcp
+      userIDGroupPairs:
+        - description: Allow SMTP service traffic from the proxy load balancer
+          groupID: "sg-081ce92bce632e583" # stalwart-migration-proxy-lb
     - fromPort: 443
       toPort: 443
       ipProtocol: tcp
