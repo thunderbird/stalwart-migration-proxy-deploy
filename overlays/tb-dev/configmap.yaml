@@ -38,33 +38,6 @@ data:
     # https://stalw.art/docs/migration/proxy/destinations/#host-and-endpoints
 
 
-    # -- Destination: legacy-stage
-    # The legacy-stage destination runs Stalwart v0.15.x on EC2 instances in the legacy AWS account.
-
-    [destination.legacy-stage]
-    host = "stalwart-legacy.stalwart-migration-proxy.svc.cluster.local"
-    tls_server_name = "mail.stage-thundermail.com"
-    forwarding = "proxy"
-    proxy_protocol = true
-    forwarded = true
-
-    [destination.legacy-stage.protocol.imap]
-    port = 993
-    tls = "implicit"
-
-    [destination.legacy-stage.protocol.submission]
-    port = 587
-    tls = "starttls"
-
-    [destination.legacy-stage.protocol.managesieve]
-    port = 4190
-    tls = "starttls"
-
-    [destination.legacy-stage.protocol.http]
-    port = 443
-    tls = "implicit"
-
-
     # -- Destination: tb-dev-thundermail
     # This runs Stalwart v0.16.x in the tb-dev EKS cluster under the "thundermail" namespace.
 
@@ -91,8 +64,6 @@ data:
     port = 443
     tls = "implicit"
 
-    # This destination will be where the SMTP passthrough service is routed, so we must have
-    # a listener for this service on this destination (but not on other destinations).
     [destination.tb-dev-thundermail.protocol.smtp]
     port = 25
     tls = "plain"
@@ -164,27 +135,12 @@ data:
     # The default_destination is where a request for an account that doesn't have an explicit
     # backend mapping yet goes. We set this to the legacy service until all accounts are migrated,
     # then switch to tb-dev-thundermail.
-    default_destination = "legacy-stage"
+    default_destination = "tb-dev-thundermail"
 
     # Unauthenticated SMTP traffic can't be routed based on account. This setting directs this
     # traffic to a single backend.
     # Ref: https://stalw.art/docs/migration/proxy/examples/stalwart-upgrade/#destinations-and-default-routing
     smtp_passthrough_destination = "tb-dev-thundermail"
-
-    # -- Endpoints served only by v15 deployments (legacy-stage)
-
-    [[http.route]]
-    match = "/api/oauth"
-    destination = "legacy-stage"
-
-    [[http.route]]
-    match = "/authorize"
-    destination = "legacy-stage"
-
-    [[http.route]]
-    match = "/authorize/**"
-    destination = "legacy-stage"
-
 
     # -- Endpoints served only by v16 deployments (tb-dev-thundermail)
 
