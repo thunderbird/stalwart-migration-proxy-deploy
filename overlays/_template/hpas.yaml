@@ -1,0 +1,10 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: stalwart-migration-proxy
+  namespace: stalwart-migration-proxy
+spec:
+  # SETUP: Update the scaling parameters below to suit your deployment's needs
+  minReplicas: 1
+  maxReplicas: 1
