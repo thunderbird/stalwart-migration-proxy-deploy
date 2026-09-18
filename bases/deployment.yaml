@@ -21,6 +21,8 @@ spec:
       labels:
         app: stalwart-migration-proxy
     spec:
+      nodeSelector:
+        role: general
       containers:
         - name: stalwart-migration-proxy
           image: stalwartlabs/proxy:v1.0-alpine

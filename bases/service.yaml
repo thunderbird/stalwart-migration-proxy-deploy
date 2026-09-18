@@ -81,34 +81,23 @@ spec:
       targetPort: proxy-api
 
 ---
-# Exposes the Stalwart migration proxy admin API as a Layer 3 Tailscale service
-apiVersion: v1
-kind: Service
-metadata:
-  name: stalwart-migration-proxy-api-tailscale
-  namespace: stalwart-migration-proxy
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-spec:
-  type: LoadBalancer
-  loadBalancerClass: tailscale
-  selector:
-    app: stalwart-migration-proxy
-  ports:
-    - name: proxy-api
-      port: 8080
-      targetPort: proxy-api
-
----
-# For convenience, creates a local service name for the legacy environment
-apiVersion: v1
-kind: Service
-metadata:
-  name: stalwart-legacy
-  namespace: stalwart-migration-proxy
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-spec:
-  type: ExternalName
-  externalName: "" # Populate with Kustomize
-
+# The below Service exposes the Stalwart migration proxy admin API as a Layer 3 Tailscale service.
+# Since we are leaning away from manually controlling account/destination mappings, we are disabling
+# this particular service exposure. The code remains commented should we change our mind about that.
+#
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: stalwart-migration-proxy-api-tailscale
+#   namespace: stalwart-migration-proxy
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "2"
+# spec:
+#   type: LoadBalancer
+#   loadBalancerClass: tailscale
+#   selector:
+#     app: stalwart-migration-proxy
+#   ports:
+#     - name: proxy-api
+#       port: 8080
+#       targetPort: proxy-api
