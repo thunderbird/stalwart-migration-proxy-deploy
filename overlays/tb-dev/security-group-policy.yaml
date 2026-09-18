@@ -1,0 +1,13 @@
+---
+# Security group policy attaching the migration proxy security group to its pods
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: stalwart-migration-proxy
+  namespace: stalwart-migration-proxy
+spec:
+  podSelector:
+    matchLabels:
+      app: stalwart-migration-proxy
+  securityGroups:
+    groupIds: ["sg-0c3ca70f07bdd1314"] # mzla-tb-dev-smp-deploy-thundermail-smp-pod

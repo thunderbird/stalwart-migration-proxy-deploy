@@ -1,0 +1,211 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stalwart-migration-proxy-config
+  namespace: stalwart-migration-proxy
+data:
+  config.toml: |
+    [server]
+    threads = 0
+    hostname = ""
+    shutdown_grace = "30s"
+
+    # SETUP: Override the log level here, or with the RUST_LOG env-var. Valid values are listed
+    #        here: https://docs.rs/log/latest/log/enum.Level.html
+    log_level = "info"
+
+    # --- TLS Configuration ---
+
+    # SETUP: Each destination will likely require the use of a different TLS certificate. Here is a
+    #        template for one. When you add support for other destinations with different domains,
+    #        you will have to add a new section like this for each one.
+    [tls.certificate.$CERT_NAME_1]
+    cert = "/etc/proxy/ssl-certificate.crt"
+    key = "/etc/proxy/ssl-certificate.key"
+
+    # SETUP: Set your certificate's domain below
+    subjects = ["*.your.tld"]
+    
+    # SETUP: "default = true" can only be set on one TLS configuration. If you support more than one
+    #        destination, you will have to remove this from all but one TLS config.
+    default = true
+
+    [tls.protocols]
+    min_version = "1.2"
+    ignore_client_order = false
+
+
+
+    # --- Destinations ---
+
+    # Destination naming should be inclusive of at least a cluster name and K8s namespace. This
+    # allows us to build segregated Stalwart installs across namespaces and still proxy them.
+    # Hostname DNS records are resolved at connection time and not cached in Stalwart, so we
+    # **do not** need to bounce Stalwart if we change the record. Ref:
+    # https://stalw.art/docs/migration/proxy/destinations/#host-and-endpoints
+
+    # SETUP: To support multiple destinations, you will have to copy the below template out into
+    #        multiple sections, each describing one destination.
+
+    # SETUP: Set an appropriate name for the destination in the places marked below
+    # -- Destination: $DESTINATION_NAME
+    # This runs Stalwart v0.16.x in the $CLUSTER_NAME EKS cluster under the "$NAMESPACE" namespace.
+
+    [destination.$DESTINATION_NAME]
+    # SETUP: Replace the host below with an appropriate hostname for this destination.
+    host = "nginx.$NAMESPACE.svc.cluster.local"
+    
+    # SETUP: Replace the server name below with your mail domain
+    tls_server_name = "mail.your.tld"
+    forwarding = "proxy"
+    proxy_protocol = true
+    forwarded = true
+
+    [destination.$DESTINATION_NAME.protocol.imap]
+    port = 993
+    tls = "implicit"
+
+    [destination.$DESTINATION_NAME.protocol.submission]
+    port = 587
+    tls = "starttls"
+
+    [destination.$DESTINATION_NAME.protocol.managesieve]
+    port = 4190
+    tls = "starttls"
+
+    [destination.$DESTINATION_NAME.protocol.http]
+    port = 443
+    tls = "implicit"
+
+    [destination.$DESTINATION_NAME.protocol.smtp]
+    port = 25
+    tls = "plain"
+
+
+    # --- Listeners ---
+
+    [listener.imaps]
+    protocol = "imap"
+    bind = ["0.0.0.0:993"]
+    tls = "implicit"
+
+    [listener.imap]
+    protocol = "imap"
+    bind = ["0.0.0.0:143"]
+    tls = "starttls"
+
+    [listener.submission]
+    protocol = "submission"
+    bind = ["0.0.0.0:587"]
+    tls = "starttls"
+
+    [listener.submissions]
+    protocol = "submission"
+    bind = ["0.0.0.0:465"]
+    tls = "implicit"
+
+    [listener.managesieve]
+    protocol = "managesieve"
+    bind = ["0.0.0.0:4190"]
+    tls = "starttls"
+
+    [listener.https]
+    protocol = "http"
+    bind = ["0.0.0.0:443"]
+    tls = "implicit"
+    forwarded = "off"
+
+    [listener.smtp]
+    protocol = "smtp"
+    bind = ["0.0.0.0:25"]
+    tls = "plain"
+
+
+    # --- Mapping Configuration ---
+    # This describes the service where the proxy's internal account mappings are stored. We use a
+    # Redis host on ElastiCache.
+
+    [mapping]
+    source = "redis"
+    normalize = "lowercase"
+
+    [mapping.redis]
+    url = "redis://stalwart-migration-proxy-redis:6379"
+    key_prefix = "route:"
+
+
+    # --- Admin Configuration ---
+    # Describes the interface to the proxy's mapping API.
+
+    [admin]
+    bind = "0.0.0.0:8080"
+    tls = "implicit"
+
+    # --- Routing ----
+    # The rules on how connections are routed through the proxy to different backends.
+
+    [routing]
+    # The default_destination is where a request for an account that doesn't have an explicit
+    # backend mapping yet goes. We set this to the legacy service until all accounts are migrated,
+    # then switch to tb-dev-thundermail.
+    #
+    # SETUP: Choose one destination to be the default if no specific mapping can be found for an
+    #        account.
+    default_destination = "$DESTINATION_NAME"
+
+    # Unauthenticated SMTP traffic can't be routed based on account. This setting directs this
+    # traffic to a single backend.
+    # Ref: https://stalw.art/docs/migration/proxy/examples/stalwart-upgrade/#destinations-and-default-routing
+    #
+    # SETUP: Only one destination can serve as the passthrough destination for SMTP. That destination
+    #        *can* be set up with MTA routes to forward mail to other servers, but SMP has to know
+    #        what *single destination* can make those decisions.
+    smtp_passthrough_destination = "$DESTINATION_NAME"
+
+    # SETUP: The next section concerns how certain API paths should be routed. You should generally
+    #        not change these, unless you need to support two API versions at once. In that case,
+    #        refer to the product documentation. Typically, you should just place your default
+    #        destination into the fields below.
+
+    # -- Endpoints served only by v16 deployments
+
+    [[http.route]]
+    match = "/api/auth"
+    destination = "$DESTINATION_NAME"
+
+    [[http.route]]
+    match = "/api/discover/**"
+    destination = "$DESTINATION_NAME"
+
+    [[http.route]]
+    match = "/admin/**"
+    destination = "$DESTINATION_NAME"
+
+    [[http.route]]
+    match = "/account/**"
+    destination = "$DESTINATION_NAME"
+
+    [[http.route]]
+    match = "/login"
+    destination = "$DESTINATION_NAME"
+
+    [[http.route]]
+    match = "/device"
+    destination = "$DESTINATION_NAME"
+
+
+    # -- OAuth token exchange is shared; route it by the web client that requested it.
+
+    [[http.route]]
+    match = "/auth/token"
+    extract = { from = "body", regex = "client_id=([^&]+)" }
+    fallback = "$DESTINATION_NAME"
+
+
+    # -- Everything else: route by the authenticated account, fall back to default.
+
+    [[http.route]]
+    match = "/**"
+    extract = { from = "authorization" }
+    fallback = "$DESTINATION_NAME"

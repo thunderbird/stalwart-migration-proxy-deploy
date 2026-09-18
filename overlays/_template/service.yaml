@@ -1,0 +1,37 @@
+---
+# The stalwart-migration-proxy service creates a public load balancer exposing
+# our migration proxy to the world.
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart-migration-proxy
+  namespace: stalwart-migration-proxy
+  annotations:
+
+    # SETUP: Uncomment the `aws-load-balancer-subnets` entry below corresponding to the public
+    #        subnets you want to deploy this load balancer onto.
+    #
+    # -- tb-dev public subnets:
+    # mzla-tb-dev-public-eu-central-1a, mzla-tb-dev-public-eu-central-1b
+    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0f9e53dca9f65b704, subnet-05af2f16f56e5b830"
+    #
+    # -- tb-prod public subnets:
+    # mzla-tb-prod-public-eu-central-1a, mzla-tb-prod-public-eu-central-1b
+    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0807adf98a8c7f4fd, subnet-07d002df085141478"
+    
+    # SETUP: Populate the tags below
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "environment=not_set,project=not_set"
+    
+    # SETUP: Enter the ID of the security group the SMP load balancer will use
+    service.beta.kubernetes.io/aws-load-balancer-security-groups: "" # mzla-tb-dev-smp-deploy-thundermail-smp-lb
+
+---
+# The stalwart-migration-proxy-redis service maps to the Serverless Redis cache's master endpoint
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart-migration-proxy-redis
+  namespace: stalwart-migration-proxy
+spec:
+  # SETUP: Enter the primary endpoint of your deployment's Redis cache
+  externalName: ""

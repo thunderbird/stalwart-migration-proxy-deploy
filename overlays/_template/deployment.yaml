@@ -1,33 +1,22 @@
 ---
-# Use PROXY_ADMIN_TOKEN to load the API bearer token used by the proxy from a secret
-
-# Ensure a bearer token secret is mounted at /etc/proxy/admin.token
-# The token must be at least 32 characters.
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stalwart-migration-proxy
   namespace: stalwart-migration-proxy
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
 spec:
-  selector:
-    matchLabels:
-      app: stalwart-migration-proxy
   template:
-    metadata:
-      labels:
-        app: stalwart-migration-proxy
     spec:
-      nodeSelector:
-        role: general
+      # SETUP: If you want to run SMP on the same nodes as the Stalwart pods themselves, change the
+      #        role below to "mail".
+      # nodeSelector:
+      #   role: general
       containers:
         - name: stalwart-migration-proxy
           image: stalwartlabs/proxy:v1.0-alpine
           imagePullPolicy: IfNotPresent
           resources:
+            # SETUP: Update the container sizing constraints below to server your deployment's needs
             requests:
               cpu: "0.5"
               memory: 1Gi
@@ -39,10 +28,10 @@ spec:
             - name: PROXY_CONFIG
               value: "/etc/proxy/config.toml"
 
-            # Override the log level here, or in the config map with the log_level option. Valid
-            # values are listed here: https://docs.rs/log/latest/log/enum.Level.html
+            # SETUP: Override the log level here, or in the config map with the log_level option.
+            # Valid values are listed here: https://docs.rs/log/latest/log/enum.Level.html
             # - name: RUST_LOG
-            #   value: "info"
+            #   value: "debug"
 
             # Bearer token
             - name: PROXY_ADMIN_TOKEN
@@ -98,6 +87,6 @@ spec:
                   name: ssl-certificate
                   items:
                     - key: tls.crt
-                      path: tls.crt
+                      path: ssl-certificate.crt
                     - key: tls.key
-                      path: tls.key
+                      path: ssl-certificate.key
