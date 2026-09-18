@@ -10,4 +10,4 @@ spec:
     matchLabels:
       app: stalwart-migration-proxy
   securityGroups:
-    groupIds: ["sg-0948f31a90e34eba6"] # stalwart-migration-proxy
+    groupIds: ["sg-0c3ca70f07bdd1314"] # mzla-tb-dev-smp-deploy-thundermail-smp-pod

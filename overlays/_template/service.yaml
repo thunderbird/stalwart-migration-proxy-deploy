@@ -8,25 +8,16 @@ metadata:
   namespace: stalwart-migration-proxy
   annotations:
 
-    # SETUP: Uncomment the `aws-load-balancer-subnets` entry below corresponding to the subnets you
-    #        want to deploy this load balancer onto. Generally, this should be set to the same
-    #        network that the SMP pods deploy to.
-
-    # **tb-dev, special stalwart subnets**
-    # Subnets: mzla-tb-dev-stalwart-eu-central-1a, mzla-tb-dev-stalwart-eu-central-1b
-    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0ae96180c6944e64e, subnet-0a6b51fec89209aea"
-
-    # **tb-dev, normal general subnets**
-    # Subnets: mzla-tb-dev-private-eu-central-1a, mzla-tb-dev-private-eu-central-1b
-    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-044e18f3022fb9ee1, subnet-01084662e5e16dce9"
-    
-    # **tb-prod, special stalwart subnets**
-    # Subnets: mzla-tb-prod-stalwart-eu-central-1a, mzla-tb-prod-stalwart-eu-central-1b
-    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0a98c29bd563864be, subnet-0707b308b8b35a48c"
-
-    # **tb-prod, normal general subnets**
-    # Subnets: mzla-tb-prod-private-eu-central-1a, mzla-tb-prod-private-eu-central-1b
-    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-085a71891b27bd24c, subnet-0b863a1876ec121cb"
+    # SETUP: Uncomment the `aws-load-balancer-subnets` entry below corresponding to the public
+    #        subnets you want to deploy this load balancer onto.
+    #
+    # -- tb-dev public subnets:
+    # mzla-tb-dev-public-eu-central-1a, mzla-tb-dev-public-eu-central-1b
+    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0f9e53dca9f65b704, subnet-05af2f16f56e5b830"
+    #
+    # -- tb-prod public subnets:
+    # mzla-tb-prod-public-eu-central-1a, mzla-tb-prod-public-eu-central-1b
+    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0807adf98a8c7f4fd, subnet-07d002df085141478"
     
     # SETUP: Populate the tags below
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "environment=not_set,project=not_set"
