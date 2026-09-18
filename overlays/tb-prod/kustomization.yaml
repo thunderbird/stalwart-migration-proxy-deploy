@@ -12,9 +12,8 @@ images:
     newTag: v1.0-alpine
 
 patches:
-  - path: aws/security-groups.yaml
-  - path: aws/subnet-groups.yaml
   - path: configmap.yaml
   - path: hpas.yaml
   - path: secrets.yaml
+  - path: security-group-policy.yaml
   - path: service.yaml

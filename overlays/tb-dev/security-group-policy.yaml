@@ -1,0 +1,13 @@
+---
+# Security group policy attaching the migration proxy security group to its pods
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: stalwart-migration-proxy
+  namespace: stalwart-migration-proxy
+spec:
+  podSelector:
+    matchLabels:
+      app: stalwart-migration-proxy
+  securityGroups:
+    groupIds: ["sg-0948f31a90e34eba6"] # stalwart-migration-proxy

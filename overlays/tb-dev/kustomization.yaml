@@ -12,11 +12,9 @@ images:
     newTag: v1.0.2-alpine
 
 patches:
-  - path: aws/elasticache.yaml
-  - path: aws/security-groups.yaml
-  - path: aws/subnet-groups.yaml
   - path: configmap.yaml
   - path: deployment.yaml
   - path: hpas.yaml
   - path: secrets.yaml
+  - path: security-group-policy.yaml
   - path: service.yaml
