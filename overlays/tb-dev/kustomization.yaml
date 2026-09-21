@@ -9,7 +9,7 @@ namespace: stalwart-migration-proxy
 
 images:
   - name: stalwartlabs/proxy
-    newTag: v1.0.2-alpine
+    newTag: v1.0.4-alpine
 
 patches:
   - path: configmap.yaml
