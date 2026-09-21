@@ -186,6 +186,10 @@ data:
     # Choosing Redis as the mapping data backend, since it is the simplest mechanism to work with
     # that allows us to run the proxy in redundant fashion. It also prevents us from having to check
     # credentials into this repo in plaintext.
+    # The documentation says that we should be able to use "rediss" if the server supports
+    # encryption in transit, but in reality we get errors when we try that. This connection goes
+    # over private network space only, and it is further gated by security group rules, so this is
+    # safe, if not the exact perfect state of things.
     [mapping.redis]
     url = "redis://stalwart-migration-proxy-redis:6379"
     key_prefix = "route:"

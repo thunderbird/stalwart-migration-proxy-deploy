@@ -117,7 +117,7 @@ data:
     normalize = "lowercase"
 
     [mapping.redis]
-    url = "rediss://stalwart-migration-proxy-redis:6379"
+    url = "redis://stalwart-migration-proxy-redis:6379"
     key_prefix = "route:"
 
 
