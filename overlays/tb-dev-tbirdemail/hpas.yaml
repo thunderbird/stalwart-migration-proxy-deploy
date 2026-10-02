@@ -1,0 +1,9 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: stalwart-migration-proxy
+  namespace: stalwart-migration-proxy
+spec:
+  minReplicas: 1
+  maxReplicas: 1

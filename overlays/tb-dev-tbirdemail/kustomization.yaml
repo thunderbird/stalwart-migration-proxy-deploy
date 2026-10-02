@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../bases
+
+namespace: smp-tbirdemail
+
+images:
+  - name: stalwartlabs/proxy
+    newTag: latest
+
+patches:
+  - path: configmap.yaml
+  - path: deployment.yaml
+  - path: hpas.yaml
+  - path: secrets.yaml
+  - path: security-group-policy.yaml
+  - path: service.yaml
