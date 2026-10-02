@@ -68,36 +68,6 @@ data:
     port = 25
     tls = "plain"
 
-    # -- Destination: tb-dev-thundermail-tbirdemail
-    # This runs Stalwart v0.16.x in the tb-dev EKS cluster under the "thundermail-tbirdemail" namespace.
-
-    [destination.tb-dev-thundermail-tbirdemail]
-    host = "nginx.thundermail-tbirdemail.svc.cluster.local"
-    tls_server_name = "mail.tbird.email"
-    forwarding = "proxy"
-    proxy_protocol = true
-    forwarded = true
-
-    [destination.tb-dev-thundermail-tbirdemail.protocol.imap]
-    port = 993
-    tls = "implicit"
-
-    [destination.tb-dev-thundermail-tbirdemail.protocol.submission]
-    port = 587
-    tls = "starttls"
-
-    [destination.tb-dev-thundermail-tbirdemail.protocol.managesieve]
-    port = 4190
-    tls = "starttls"
-
-    [destination.tb-dev-thundermail-tbirdemail.protocol.http]
-    port = 443
-    tls = "implicit"
-
-    [destination.tb-dev-thundermail-tbirdemail.protocol.smtp]
-    port = 25
-    tls = "plain"
-
 
     # --- Listeners ---
 
