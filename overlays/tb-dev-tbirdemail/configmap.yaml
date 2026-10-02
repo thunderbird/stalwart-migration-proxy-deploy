@@ -1,0 +1,184 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stalwart-migration-proxy-config
+  namespace: stalwart-migration-proxy
+data:
+  config.toml: |
+    [server]
+    threads = 0
+    hostname = ""
+    shutdown_grace = "30s"
+
+    log_level = "info"
+
+    # --- TLS Configuration ---
+
+    [tls.certificate.tbirdemail]
+    cert = "/etc/proxy/ssl-certificate.crt"
+    key = "/etc/proxy/ssl-certificate.key"
+    subjects = ["*.tbird.email"]
+    default = true
+
+    [tls.protocols]
+    min_version = "1.2"
+    ignore_client_order = false
+
+
+    # --- Destinations ---
+
+    # Destination naming should be inclusive of at least a cluster name and K8s namespace. This
+    # allows us to build segregated Stalwart installs across namespaces and still proxy them.
+    # Hostname DNS records are resolved at connection time and not cached in Stalwart, so we
+    # **do not** need to bounce Stalwart if we change the record. Ref:
+    # https://stalw.art/docs/migration/proxy/destinations/#host-and-endpoints
+
+    # -- Destination: thundermail-tbirdemail
+    # This runs Stalwart v0.16.x in the tb-dev EKS cluster under the "thundermail-tbirdemail"
+    # namespace.
+
+    [destination.thundermail-tbirdemail]
+    host = "nginx.thundermail-tbirdemail.svc.cluster.local"
+    
+    tls_server_name = "mail.tbird.email"
+    forwarding = "proxy"
+    proxy_protocol = true
+    forwarded = true
+
+    [destination.thundermail-tbirdemail.protocol.imap]
+    port = 993
+    tls = "implicit"
+
+    [destination.thundermail-tbirdemail.protocol.submission]
+    port = 587
+    tls = "starttls"
+
+    [destination.thundermail-tbirdemail.protocol.managesieve]
+    port = 4190
+    tls = "starttls"
+
+    [destination.thundermail-tbirdemail.protocol.http]
+    port = 443
+    tls = "implicit"
+
+    [destination.thundermail-tbirdemail.protocol.smtp]
+    port = 25
+    tls = "plain"
+
+
+    # --- Listeners ---
+
+    [listener.imaps]
+    protocol = "imap"
+    bind = ["0.0.0.0:993"]
+    tls = "implicit"
+
+    [listener.imap]
+    protocol = "imap"
+    bind = ["0.0.0.0:143"]
+    tls = "starttls"
+
+    [listener.submission]
+    protocol = "submission"
+    bind = ["0.0.0.0:587"]
+    tls = "starttls"
+
+    [listener.submissions]
+    protocol = "submission"
+    bind = ["0.0.0.0:465"]
+    tls = "implicit"
+
+    [listener.managesieve]
+    protocol = "managesieve"
+    bind = ["0.0.0.0:4190"]
+    tls = "starttls"
+
+    [listener.https]
+    protocol = "http"
+    bind = ["0.0.0.0:443"]
+    tls = "implicit"
+    forwarded = "off"
+
+    [listener.smtp]
+    protocol = "smtp"
+    bind = ["0.0.0.0:25"]
+    tls = "plain"
+
+
+    # --- Mapping Configuration ---
+    # This describes the service where the proxy's internal account mappings are stored. We use a
+    # Redis host on ElastiCache.
+
+    [mapping]
+    source = "redis"
+    normalize = "lowercase"
+
+    [mapping.redis]
+    url = "redis://stalwart-migration-proxy-redis:6379"
+    key_prefix = "route:"
+
+
+    # --- Admin Configuration ---
+    # Describes the interface to the proxy's mapping API.
+
+    [admin]
+    bind = "0.0.0.0:8080"
+    tls = "implicit"
+
+    # --- Routing ----
+    # The rules on how connections are routed through the proxy to different backends.
+
+    [routing]
+    # The default_destination is where a request for an account that doesn't have an explicit
+    # backend mapping yet goes. We set this to the legacy service until all accounts are migrated,
+    # then switch to tb-dev-thundermail.
+    default_destination = "thundermail-tbirdemail"
+
+    # Unauthenticated SMTP traffic can't be routed based on account. This setting directs this
+    # traffic to a single backend.
+    # Ref: https://stalw.art/docs/migration/proxy/examples/stalwart-upgrade/#destinations-and-default-routing
+    #
+    smtp_passthrough_destination = "thundermail-tbirdemail"
+
+    # -- Endpoints served only by v16 deployments
+
+    [[http.route]]
+    match = "/api/auth"
+    destination = "thundermail-tbirdemail"
+
+    [[http.route]]
+    match = "/api/discover/**"
+    destination = "thundermail-tbirdemail"
+
+    [[http.route]]
+    match = "/admin/**"
+    destination = "thundermail-tbirdemail"
+
+    [[http.route]]
+    match = "/account/**"
+    destination = "thundermail-tbirdemail"
+
+    [[http.route]]
+    match = "/login"
+    destination = "thundermail-tbirdemail"
+
+    [[http.route]]
+    match = "/device"
+    destination = "thundermail-tbirdemail"
+
+
+    # -- OAuth token exchange is shared; route it by the web client that requested it.
+
+    [[http.route]]
+    match = "/auth/token"
+    extract = { from = "body", regex = "client_id=([^&]+)" }
+    fallback = "thundermail-tbirdemail"
+
+
+    # -- Everything else: route by the authenticated account, fall back to default.
+
+    [[http.route]]
+    match = "/**"
+    extract = { from = "authorization" }
+    fallback = "thundermail-tbirdemail"
