@@ -25,6 +25,8 @@ metadata:
     # SETUP: Enter the ID of the security group the SMP load balancer will use
     service.beta.kubernetes.io/aws-load-balancer-security-groups: "" # mzla-tb-dev-smp-deploy-thundermail-smp-lb
 
+    # SETUP: Set a unique name for the ELB below (constrained to 32 chars, per AWS)
+    service.beta.kubernetes.io/aws-load-balancer-name: ""
 ---
 # The stalwart-migration-proxy-redis service maps to the Serverless Redis cache's master endpoint
 apiVersion: v1
