@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ../../bases
 
-namespace: smp-tbirdemail
+namespace: stalwart-migration-proxy-tbirdemail
 
 images:
   - name: stalwartlabs/proxy
