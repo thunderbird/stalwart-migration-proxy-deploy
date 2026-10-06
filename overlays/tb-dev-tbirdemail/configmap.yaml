@@ -40,11 +40,9 @@ data:
 
     [destination.thundermail-tbirdemail]
     host = "nginx.thundermail-tbirdemail.svc.cluster.local"
-    
     tls_server_name = "mail.tbird.email"
     forwarding = "proxy"
     proxy_protocol = true
-    forwarded = true
 
     [destination.thundermail-tbirdemail.protocol.imap]
     port = 993
@@ -61,6 +59,7 @@ data:
     [destination.thundermail-tbirdemail.protocol.http]
     port = 443
     tls = "implicit"
+    forwarded = true
 
     [destination.thundermail-tbirdemail.protocol.smtp]
     port = 25
