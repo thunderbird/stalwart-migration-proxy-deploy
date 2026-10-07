@@ -11,7 +11,7 @@ data:
     hostname = ""
     shutdown_grace = "30s"
 
-    log_level = "debug"
+    log_level = "info"
 
     # --- TLS Configuration ---
 
