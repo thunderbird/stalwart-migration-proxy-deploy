@@ -129,9 +129,6 @@ data:
     # The rules on how connections are routed through the proxy to different backends.
 
     [routing]
-    # The default_destination is where a request for an account that doesn't have an explicit
-    # backend mapping yet goes. We set this to the legacy service until all accounts are migrated,
-    # then switch to tb-dev-thundermail.
     default_destination = "thundermail-tbirdemail"
 
     # Unauthenticated SMTP traffic can't be routed based on account. This setting directs this
