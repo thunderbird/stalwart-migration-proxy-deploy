@@ -52,7 +52,7 @@ data:
     port = 587
     tls = "starttls"
 
-    [destination.thundermail-tbirdemail.protocol.submissions]
+    [destination.thundermail-tbirdemail.protocol.submission]
     port = 465
     tls = "implicit"
 
